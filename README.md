@@ -1,7 +1,17 @@
 # utl-my-85-dollar-very-slow-laptop-as-fast-as-SAS-CAS
-My 85 dollar very slow laptop as fast as SAS CAS
-
     My $85 dollar very slow laptop as fast as SAS CAS
+
+    Update removed SASFILE
+
+                                    Seconds
+    Engine              Method      Real Time
+
+    CAS              Simple.Summary      7.39  -> SAS benchmark
+    SAS              PROC MEANS        152.44  -> SAS benchmark
+
+    My laptop                            8.07  -> without SASFile
+
+    estimate (beast)                     4.00  * estimate (two NVMe drives)
 
     github
     https://tinyurl.com/vhlymr7
@@ -24,15 +34,6 @@ My 85 dollar very slow laptop as fast as SAS CAS
 
     My $85 dollar laptop is almost as fast as CAS
 
-                                    Seconds
-    Engine              Method      Real Time
-
-    CAS              Simple.Summary      7.39  -> SAS benchmark
-    SAS              PROC MEANS        152.44  -> SAS benchmark
-
-    My laptop                           12.27
-
-    estimate (beast)                     4.00  * estimate (two NVMe drives)
 
     I bet my $1,000 beast worstation with two nvme drives will take much less than half the time of my laptop
     Will run awhen I am back in DC and have the second NVMe dtive installed (along with best driver)
@@ -63,7 +64,7 @@ My 85 dollar very slow laptop as fast as SAS CAS
 
     libname chd "c:/sd1";
     libname dhd "d:/sd1";
-    libname hhd "h:/sd1";
+    libname hhd "e:/sd1";
     libname out "c:/sd1";
 
     data chd.m160_1  chd.m160_2 dhd.m160_3 dhd.m160_4 dhd.m160_5 hhd.m160_6 hhd.m160_7 hhd.m160_8;
@@ -143,7 +144,7 @@ My 85 dollar very slow laptop as fast as SAS CAS
 
 
 
-    %let _s=%sysfunc(compbl(C:\Progra~1\SASHome\SASFoundation\9.4\sas.exe -sysin c:\nul
+    %let _s=%sysfunc(compbl(C:\Progra~1\SASHome\SASFoundation\9.4\sas.exe -sysin c:\nul -nosplash
       -sasautos c:\oto -work d:\wrk -rsasuser));
 
     * this places the macro in my autocall library, c:/oto, so the batch command can find the macro;
@@ -154,15 +155,11 @@ My 85 dollar very slow laptop as fast as SAS CAS
 
        libname ssd "&drv.";
 
-       sasfile ssd.&tbl load;
-
        proc means data=ssd.&tbl noprint nway;
           var revenue expenses;
           class facility productline;
           output out=ssd.&tbl.1 sum(revenue)=sumRevenue sum(expenses)=sumExpenses;
        run;
-
-       sasfile ssd.&tbl close;
 
     %mend parlel;
     ;;;;
@@ -179,9 +176,9 @@ My 85 dollar very slow laptop as fast as SAS CAS
     systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_3)) -log d:\log\a3.log" taskname=sys3;
     systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_4)) -log d:\log\a4.log" taskname=sys4;
     systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_5)) -log d:\log\a5.log" taskname=sys5;
-    systask command "&_s -termstmt %nrstr(%parlel(h:/sd1,m160_6)) -log d:\log\a6.log" taskname=sys6;
-    systask command "&_s -termstmt %nrstr(%parlel(h:/sd1,m160_7)) -log d:\log\a7.log" taskname=sys7;
-    systask command "&_s -termstmt %nrstr(%parlel(h:/sd1,m160_8)) -log d:\log\a8.log" taskname=sys8;
+    systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_6)) -log d:\log\a6.log" taskname=sys6;
+    systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_7)) -log d:\log\a7.log" taskname=sys7;
+    systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_8)) -log d:\log\a8.log" taskname=sys8;
 
     waitfor sys1 sys2 sys3 sys4  sys5 sys6 sys7 sys8;
     %put %sysevalf(%sysfunc(time()) - &tym);
@@ -217,6 +214,40 @@ My 85 dollar very slow laptop as fast as SAS CAS
      7        B             X            3      20000000     989949866      40002720
      8        B             Y            3      20000000     989863982      40000232
 
+
+    113   %let _s=%sysfunc(compbl(C:\Progra~1\SASHome\SASFoundation\9.4\sas.exe -sysin c:\nul -nosplash
+    114     -sasautos c:\oto -work d:\wrk -rsasuser));
+    115   * this places the macro in my autocall library, c:/oto, so the batch command can find the macro;
+
+    116   filename ft15f001 "c:\oto\parlel.sas";
+    117   parmcards4;
+    126   ;;;;
+
+    127   run;quit;
+    128   * set up;
+    129   %let tym=%sysfunc(time());
+    NOTE: "sys7" is not an active task/transaction.
+    130   systask kill sys1 sys2 sys3 sys4  sys5 sys6 sys7 sys8;
+    131   systask command "&_s -termstmt %nrstr(%parlel(c:/sd1,m160_1)) -log d:\log\a1.log" taskname=sys1;
+    132   systask command "&_s -termstmt %nrstr(%parlel(c:/sd1,m160_2)) -log d:\log\a2.log" taskname=sys2;
+    133   systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_3)) -log d:\log\a3.log" taskname=sys3;
+    134   systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_4)) -log d:\log\a4.log" taskname=sys4;
+    135   systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_5)) -log d:\log\a5.log" taskname=sys5;
+    136   systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_6)) -log d:\log\a6.log" taskname=sys6;
+    137   systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_7)) -log d:\log\a7.log" taskname=sys7;
+    138   systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_8)) -log d:\log\a8.log" taskname=sys8;
+    139   waitfor sys1 sys2 sys3 sys4  sys5 sys6 sys7 sys8;
+    NOTE: Task "sys6" produced no LOG/Output.
+    140   %put %sysevalf(%sysfunc(time()) - &tym);
+    8.08600020409358
+    NOTE: Task "sys7" produced no LOG/Output.
+    NOTE: Task "sys3" produced no LOG/Output.
+    NOTE: Task "sys1" produced no LOG/Output.
+    NOTE: Task "sys8" produced no LOG/Output.
+    NOTE: Task "sys2" produced no LOG/Output.
+    NOTE: Task "sys4" produced no LOG/Output.
+    NOTE: Task "sys5" produced no LOG/Output.
+
     *_
     | | ___   __ _
     | |/ _ \ / _` |
@@ -225,31 +256,77 @@ My 85 dollar very slow laptop as fast as SAS CAS
              |___/
     ;
 
+
+    113   %let _s=%sysfunc(compbl(C:\Progra~1\SASHome\SASFoundation\9.4\sas.exe -sysin c:\nul -nosplash
+    114     -sasautos c:\oto -work d:\wrk -rsasuser));
+    115   * this places the macro in my autocall library, c:/oto, so the batch command can find the macro;
+
+    116   filename ft15f001 "c:\oto\parlel.sas";
+    117   parmcards4;
+    126   ;;;;
+
+    127   run;quit;
+    128   * set up;
+    129   %let tym=%sysfunc(time());
+    NOTE: "sys7" is not an active task/transaction.
+    130   systask kill sys1 sys2 sys3 sys4  sys5 sys6 sys7 sys8;
+    131   systask command "&_s -termstmt %nrstr(%parlel(c:/sd1,m160_1)) -log d:\log\a1.log" taskname=sys1;
+    132   systask command "&_s -termstmt %nrstr(%parlel(c:/sd1,m160_2)) -log d:\log\a2.log" taskname=sys2;
+    133   systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_3)) -log d:\log\a3.log" taskname=sys3;
+    134   systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_4)) -log d:\log\a4.log" taskname=sys4;
+    135   systask command "&_s -termstmt %nrstr(%parlel(d:/sd1,m160_5)) -log d:\log\a5.log" taskname=sys5;
+    136   systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_6)) -log d:\log\a6.log" taskname=sys6;
+    137   systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_7)) -log d:\log\a7.log" taskname=sys7;
+    138   systask command "&_s -termstmt %nrstr(%parlel(e:/sd1,m160_8)) -log d:\log\a8.log" taskname=sys8;
+    139   waitfor sys1 sys2 sys3 sys4  sys5 sys6 sys7 sys8;
+    NOTE: Task "sys6" produced no LOG/Output.
+    140   %put %sysevalf(%sysfunc(time()) - &tym);
+
+
+    8.08600020409358
+
+
+
+    NOTE: Task "sys7" produced no LOG/Output.
+    NOTE: Task "sys3" produced no LOG/Output.
+    NOTE: Task "sys1" produced no LOG/Output.
+    NOTE: Task "sys8" produced no LOG/Output.
+    NOTE: Task "sys2" produced no LOG/Output.
+    NOTE: Task "sys4" produced no LOG/Output.
+    NOTE: Task "sys5" produced no LOG/Output.
+
+    *       ___   _
+      __ _ ( _ ) | | ___   __ _
+     / _` |/ _ \ | |/ _ \ / _` |
+    | (_| | (_) || | (_) | (_| |
+     \__,_|\___(_)_|\___/ \__, |
+                          |___/
+    ;
+
+
     NOTE: Additional host information:
 
      X64_7PRO WIN 6.1.7601 Service Pack 1 Workstation
 
     NOTE: SAS initialization used:
-          real time           0.81 seconds
-          cpu time            0.26 seconds
+          real time           0.54 seconds
+          cpu time            0.24 seconds
 
     NOTE: Libref SSD was successfully assigned as follows:
           Engine:        V9
-          Physical Name: d:\sd1
-    NOTE: The file SSD.M160_3.DATA has been loaded into memory by the SASFILE statement.
+          Physical Name: e:\sd1
 
-    NOTE: There were 20000000 observations read from the data set SSD.M160_3.
-    NOTE: The data set SSD.M160_31 has 1 observations and 6 variables.
+    NOTE: There were 20000000 observations read from the data set SSD.M160_8.
+    NOTE: The data set SSD.M160_81 has 1 observations and 6 variables.
     NOTE: PROCEDURE MEANS used (Total process time):
+          real time           6.91 seconds
+          cpu time            6.22 seconds
 
-          real time           10.83 seconds    *** I expect this to be much faster with 32 cores)
-          cpu time            9.79 seconds
 
-
-    NOTE: The file SSD.M160_3.DATA has been closed by the SASFILE statement.
 
     NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
     NOTE: The SAS System used:
-          real time           12.11 seconds
-          cpu time            10.45 seconds
+          real time           7.50 seconds
+          cpu time            6.50 seconds
+
 
